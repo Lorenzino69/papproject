@@ -6,6 +6,7 @@ import {MatInputModule} from "@angular/material/input";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {NgIf} from "@angular/common";
 import {Router} from "@angular/router";
+import {HttpClient, HttpClientModule} from "@angular/common/http";
 
 @Component({
   selector: 'app-signup',
@@ -16,6 +17,7 @@ import {Router} from "@angular/router";
     MatInputModule,
     MatFormFieldModule,
     ReactiveFormsModule,
+    HttpClientModule,
     NgIf],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css'
@@ -28,7 +30,7 @@ export class SignupComponent implements OnInit {
     password: new FormControl(''),
   });
 
-  constructor(private fb: FormBuilder, private router: Router) {}
+  constructor(private fb: FormBuilder, private router: Router,private http: HttpClient) {}
 
   ngOnInit(): void {
     this.signupForm = this.fb.group({
@@ -41,18 +43,21 @@ export class SignupComponent implements OnInit {
 
   onSubmit(): void {
     if (this.signupForm.valid) {
-      const firstName = this.signupForm.get('firstName')?.value;
-      const lastName = this.signupForm.get('lastName')?.value;
-      const email = this.signupForm.get('email')?.value;
-      const password = this.signupForm.get('password')?.value;
-      // Ajoutez votre logique de création de compte ici
-      console.log('First Name:', firstName);
-      console.log('Last Name:', lastName);
-      console.log('Email:', email);
-      console.log('Password:', password);
-      localStorage.setItem('authToken', 'token de connexion factice'); //TODO a générer par le backend
-      // Rediriger vers le tableau de bord après la création de compte
-      this.router.navigate(['/dashboard']);
+      const formData = this.signupForm.value;
+
+      this.http.post('http://locahost/signup.php', formData).subscribe(
+        (response: any) => {
+          if (response.status === 'success') {
+            localStorage.setItem('authToken', 'token de connexion factice'); // TODO: remplacer par un token réel du backend
+            this.router.navigate(['/dashboard']);
+          } else {
+            console.error(response.message);
+          }
+        },
+        error => {
+          console.error('Erreur lors de la requête HTTP:', error);
+        }
+      );
     }
   }
 
