@@ -7,6 +7,7 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {NgIf} from "@angular/common";
 import {Router} from "@angular/router";
 import {HttpClient, HttpClientModule} from "@angular/common/http";
+import {AuthService} from "../../services/auth.service";
 
 @Component({
   selector: 'app-signup',
@@ -30,7 +31,7 @@ export class SignupComponent implements OnInit {
     password: new FormControl(''),
   });
 
-  constructor(private fb: FormBuilder, private router: Router,private http: HttpClient) {}
+  constructor(private fb: FormBuilder, private router: Router,private http: HttpClient,private authService: AuthService) {}
 
   ngOnInit(): void {
     this.signupForm = this.fb.group({
@@ -44,11 +45,13 @@ export class SignupComponent implements OnInit {
   onSubmit(): void {
     if (this.signupForm.valid) {
       const formData = this.signupForm.value;
+      console.log('Données du formulaire:', formData);
 
-      this.http.post('http://locahost/signup.php', formData).subscribe(
+      this.http.post('http://127.0.0.1/pap/php/signup.php', formData).subscribe(
         (response: any) => {
           if (response.status === 'success') {
-            localStorage.setItem('authToken', 'token de connexion factice'); // TODO: remplacer par un token réel du backend
+            localStorage.setItem('authToken', 'token de connexion factice');
+            this.authService.login("user")
             this.router.navigate(['/dashboard']);
           } else {
             console.error(response.message);
