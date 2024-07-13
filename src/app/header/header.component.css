@@ -1,0 +1,31 @@
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding:3rem;
+}
+
+.header-left button {
+  margin-right: 10px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.menu {
+  display: flex;
+  padding: 24px;
+  align-items: center;
+  gap: 16px;
+}
+
+
+.cart-price {
+  display:flex;
+  flex-direction: row;
+  color: white;
+}

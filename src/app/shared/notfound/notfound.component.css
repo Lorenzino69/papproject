@@ -1,0 +1,13 @@
+.not-found-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+}
+
+.not-found-card {
+  padding: 20px;
+  max-width: 400px;
+  width: 100%;
+}

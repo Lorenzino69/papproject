@@ -1,0 +1,36 @@
+<mat-toolbar color="primary" class="app-header">
+  <div class="header-left">
+    <ng-container *ngIf="(isAuthenticated$ | async); else notAuthenticated">
+      <button mat-fab (click)="logout()">
+        <mat-icon>logout</mat-icon>
+      </button>
+    </ng-container>
+    <ng-template #notAuthenticated>
+      <button mat-raised-button color="accent" (click)="login()">Iniciar Sessão</button>
+      <button mat-raised-button color="accent" (click)="createAccount()">Criar Conta</button>
+    </ng-template>
+  </div>
+  <div class="header-right">
+    <mat-form-field subscriptSizing="dynamic">
+      <mat-label>Search</mat-label>
+      <input matInput type="text" [(ngModel)]="value">
+      @if (value) {
+        <button matSuffix mat-icon-button aria-label="Search" (click)="value=''">
+          <mat-icon>clear</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+    <div class="menu">
+      <a mat-button href="#">Artigos</a>
+      <a mat-button href="#">Quem Somos?</a>
+      <a mat-button href="#">Onde Estamos?</a>
+      <div class="">
+        <a mat-fab extended>
+          <mat-icon>shopping_cart</mat-icon>
+          {{ cartPrice | currency }}
+        </a>
+      </div>
+    </div>
+
+  </div>
+</mat-toolbar>
