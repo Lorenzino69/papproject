@@ -7,6 +7,7 @@ import {MatInputModule} from "@angular/material/input";
 import {NgIf} from "@angular/common";
 import {Router} from "@angular/router";
 import {AuthService} from "../../services/auth.service";
+import {HttpClient, HttpClientModule} from "@angular/common/http";
 
 @Component({
   selector: 'app-login',
@@ -18,6 +19,7 @@ import {AuthService} from "../../services/auth.service";
     MatInputModule,
     MatFormFieldModule,
     ReactiveFormsModule,
+    HttpClientModule,
     NgIf
   ],
   templateUrl: './login.component.html',
@@ -28,7 +30,7 @@ export class LoginComponent implements OnInit {
     email: new FormControl(''),
     password: new FormControl(''),
   });
-  constructor(private fb: FormBuilder, private router: Router,private authService: AuthService) {}
+  constructor(private fb: FormBuilder, private router: Router,private authService: AuthService, private http: HttpClient) {}
   ngOnInit(): void {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -37,17 +39,20 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.loginForm.valid) {
-      const email = this.loginForm.get('email')?.value;
-      const password = this.loginForm.get('password')?.value;
-      // Ajoutez votre logique de connexion ici
-      console.log('Email:', email);
-      console.log('Password:', password);
-      this.authService.login('token de connexion factice'); //TODO a génrer par le backend
-      //recharger page
-      // Rediriger vers le tableau de bord après la connexion
-      this.router.navigate(['/dashboard']);
-    }
+    const formData = this.loginForm.value;
+    this.http.post('http://locahost/connexion.php', formData).subscribe(
+      (response: any) => {
+        if (response.status === 'success') {
+          localStorage.setItem('authToken', 'token de connexion factice'); // TODO: remplacer par un token réel du backend
+          this.router.navigate(['/dashboard']);
+        } else {
+          console.error(response.message);
+        }
+      },
+      error => {
+        console.error('Erreur lors de la requête HTTP:', error);
+      }
+    );
   }
 
   navigateToSignUp(): void {
